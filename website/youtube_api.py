@@ -12,8 +12,8 @@ from .db import (
     update_video_stats,
 )
 
-API_KEY = "AIzaSyDtvUR4nzjAlFWAPkGaWpWRMkX1BjVbPqU"
-CHANNEL_ID = "UCLhipOncIKAoSBacXfmxfNw"
+API_KEY = "XXX"
+CHANNEL_ID = "XXX"
 PAGE_SIZE = 50
 VERTICAL_WIDTH = "405"
 
