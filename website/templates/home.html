@@ -1,0 +1,60 @@
+{% extends "./base.html" %}
+{% block title %}Video Reviewer{% endblock %}
+{%block content%}
+    <form method="GET" action="{{ url_for('views.home') }}" class="sort-form" style="display: inline-block;">
+        <label for="sort">Sort by:</label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+            <option value="uploaded" {% if sort == 'uploaded' %}selected{% endif %}>Uploaded</option>
+            <option value="views" {% if sort == 'views' %}selected{% endif %}>Views</option>
+            <option value="likes" {% if sort == 'likes' %}selected{% endif %}>Likes</option>
+            <option value="comments" {% if sort == 'comments' %}selected{% endif %}>Comments</option>
+            <option value="duration" {% if sort == 'duration' %}selected{% endif %}>Duration</option>
+        </select>
+        <input type="hidden" id="sort-dir" name="dir" value="{{ direction }}">
+        <button type="button" id="dir-toggle" class="toggle-btn">
+            {% if direction == 'desc' %}Descending{% else %}Ascending{% endif %}
+        </button>
+    </form>
+    <span class="view-toggle" style="display: inline-block; margin-left: 20px;">
+        <button type="button" class="toggle-btn active" data-view="videos">Videos</button>
+        <button type="button" class="toggle-btn" data-view="shorts">Shorts</button>
+    </span>
+
+    <section class="video-list" data-view="videos">
+        <div class="video-grid">
+            {% for video in videos %}
+                <a class="video-card" href="{{ url_for('views.video', video_id=video.video_id) }}">
+                    <img src="{{ video.thumbnail }}" alt="{{ video.title }}" />
+                    <p class="video-title">{{ video.title }}</p>
+                    {% if video.views is not none %}
+                        <p class="video-stats">
+                            {{ video.views }} views · {{ video.likes }} likes · {{ video.comments }} comments
+                        </p>
+                    {% endif %}
+                    {% if video.stars is not none %}
+                        <p class="video-stars">{{ video.stars }}/10 stars</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="video-list hidden" data-view="shorts">
+        <div class="video-grid">
+            {% for video in shorts %}
+                <a class="video-card" href="{{ url_for('views.video', video_id=video.video_id) }}">
+                    <img src="{{ video.thumbnail }}" alt="{{ video.title }}" />
+                    <p class="video-title">{{ video.title }}</p>
+                    {% if video.views is not none %}
+                        <p class="video-stats">
+                            {{ video.views }} views · {{ video.likes }} likes · {{ video.comments }} comments
+                        </p>
+                    {% endif %}
+                    {% if video.stars is not none %}
+                        <p class="video-stars">{{ video.stars }}/10 stars</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
+    </section>
+{%endblock%}

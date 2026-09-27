@@ -1,0 +1,70 @@
+{% extends "./base.html" %}
+{% block title %}Video{% endblock %}
+
+{% macro star_rating(name, value=0) %}
+    <div class="star-widget" data-input="{{ name }}">
+        <div class="star-buttons">
+            {% for i in range(1, out_of_stars + 1) %}
+                <button
+                    type="button"
+                    class="star"
+                    data-value="{{ i }}"
+                    aria-label="{{ i }}/{{ out_of_stars }} stars"
+                    aria-pressed="false">★</button>
+            {% endfor %}
+        </div>
+        <input type="hidden" id="{{ name }}" name="{{ name }}" value="{{ value }}">
+        <span class="star-value">{{ value }}/{{ out_of_stars }}</span>
+    </div>
+{% endmacro %}
+
+{%block content%}
+    <div class="video-layout">
+    <div class="video-page">
+        <iframe
+            class="video-frame"
+            src="https://www.youtube.com/embed/{{ video.video_id }}"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+    </div>
+
+    <div class="review-panel">
+    <h2>Review</h2>
+    <form method="POST" action="{{ url_for('views.submit_review', video_id=video.video_id) }}">
+        <div class="review-scroll">
+        <p>
+            Overall:
+            {% if video.star_review %}
+                {{ video.star_review.stars }}/{{ video.star_review.out_of_stars }} stars
+            {% else %}
+                not rated yet
+            {% endif %}
+        </p>
+        <p>
+            <label for="overall_stars">Overall stars:</label>
+            {{ star_rating("overall_stars", video.star_review.stars if video.star_review else 0) }}
+        </p>
+
+        {% for category in video.review.categories.values() %}
+            <fieldset>
+                <legend>{{ category.name }}</legend>
+                <p>{{ category.description }}</p>
+                <label for="{{ category.name }}_review">Review:</label>
+                <textarea
+                    id="{{ category.name }}_review"
+                    name="{{ category.name }}_review"
+                    rows="3">{{ category.review }}</textarea>
+                <label for="{{ category.name }}_stars">Stars:</label>
+                {{ star_rating(category.name ~ "_stars", category.rating.stars if category.rating else 0) }}
+            </fieldset>
+        {% endfor %}
+        </div>
+
+        <button type="submit">Save review</button>
+    </form>
+    </div>
+    </div>
+{%endblock%}
